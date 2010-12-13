@@ -1,0 +1,50 @@
+<%= form_for(@payment) do |f| %>
+  <% if @payment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@payment.errors.count, "error") %> prohibited this payment from being saved:</h2>
+
+      <ul>
+      <% @payment.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :last_name %><br />
+    <%= collection_select(:payment, :customer_id, Customer.find(:all, :order => 'last_name ASC'), :id, :last_name, {:include_blank => "Select..."}) %>
+  </div>
+
+  <div class="field">
+    <%= f.label :amount_charged %><br />
+    <%= f.text_field :amount_charged %>
+  </div>
+
+  <div class="field">
+    <%= f.label :amount_received%><br />
+    <%= f.text_field :amount_received %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :amount_due %><br />
+    <%= f.text_field :amount_due %>
+  </div>
+
+  <div class="field">
+    <%= f.label :date_payed %><br />
+    <%= f.text_field :date_payed %>
+  </div>
+
+  <div id="cuts">
+    <%= render :partial => 'cut', :collection => @payment.cuts %>
+  </div>
+
+  <p>
+  <%= add_cut_link "Add Cut" %>
+  </p>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
