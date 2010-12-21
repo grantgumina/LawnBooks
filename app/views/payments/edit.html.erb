@@ -1,5 +1,7 @@
 <h1>Editing payment</h1>
 
-<%= render 'form' %>
+<% form_for :payment, :url => payment_path(@payment), :html => { :method => 'put' } do |f| %>
+  <%= render :partial => 'form', :locals => { :f => f } %>
+<% end %>
 <%= link_to 'Show', @payment %> |
 <%= link_to 'Back', payments_path %>

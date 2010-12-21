@@ -26,11 +26,11 @@ class PaymentsController < ApplicationController
   def new
     @payment = Payment.new
     @payment.cuts.build
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @payment }
-    end
+# 
+#     respond_to do |format|
+#       format.html # new.html.erb
+#       format.xml  { render :xml => @payment }
+#     end
   end
 
   # GET /payments/1/edit
@@ -42,31 +42,28 @@ class PaymentsController < ApplicationController
   # POST /payments.xml
   def create
     @payment = Payment.new(params[:payment])
-
-    respond_to do |format|
-      if @payment.save
-        format.html { redirect_to(@payment, :notice => 'Payment was successfully created.') }
-        format.xml  { render :xml => @payment, :status => :created, :location => @payment }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @payment.errors, :status => :unprocessable_entity }
-      end
+    
+    if @payment.save 
+      flash[:notice] = 'Successfully save payment.'
+      redirect_to @payment
+    else
+      flash[:notice] = 'Sorry, but there was an error.'
+      render :action => 'new'
     end
   end
 
   # PUT /payments/1
   # PUT /payments/1.xml
   def update
+    params[:payment][:existing_cut_attributes] ||= {}
     @payment = Payment.find(params[:id])
-
-    respond_to do |format|
-      if @payment.update_attributes(params[:payment])
-        format.html { redirect_to(@payment, :notice => 'Payment was successfully updated.') }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @payment.errors, :status => :unprocessable_entity }
-      end
+    
+    if @payment.update_attributes(params[:payment])
+      flash[:notice] = 'Successfully updated payment.'
+      redirect_to @payment
+    else
+      flash[:notice] = 'Sorry, but there was an error.'
+      render :action => 'edit'
     end
   end
 

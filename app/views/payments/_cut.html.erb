@@ -1,12 +1,9 @@
-<% for cut in @payment.cuts %>
-  <div class='cut'>
-    <fieldset>
-      <h3>Cut</h3>
-      <%= fields_for "payment[cut_attributes][]", cut do |c| %>
-        <%= c.label :date_cut %><br />
-        <%= c.text_field :date_cut %>
-        <%= link_to_function "remove", "$(this).up('.cut').remove()" %>
-      <% end %>
-    </fieldset>
-  </div>
-<% end %>
+<div class="cut">
+  <%= fields_for_cut(cut) do |c| %>
+    <h3>Cut</h3>
+    <p>
+      Date Cut<%= c.text_field :date_cut %>
+      <%= link_to_function "Remove Cut", "this.up('.cut').remove();" %>
+    </p>
+  <% end %>
+</div>
