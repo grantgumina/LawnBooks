@@ -1,8 +1,13 @@
 SmallBooks::Application.routes.draw do
+  # get "sessions/new"
+
   resources :payments
-  resources :customers
+  resources :customers  
+  resources :sessions, :only => [:new, :create, :destroy]
 
   match '/index' => 'home#index'
+  match '/login' => 'sessions#new'
+  match '/logout' => 'sessions#destroy'
 
   root :to => "home#index"
   

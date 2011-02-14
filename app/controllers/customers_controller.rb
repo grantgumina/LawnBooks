@@ -1,4 +1,10 @@
+include SessionsHelper
+
 class CustomersController < ApplicationController
+  before_filter :authenticate, :only => [:edit, :update]
+  before_filter :correct_customer, :only => [:edit, :update]
+  before_filter :check_for_admin, :only => [:new, :create]
+
   # GET /customers
   # GET /customers.xml
   def index
@@ -34,13 +40,22 @@ class CustomersController < ApplicationController
 
   # GET /customers/1/edit
   def edit
+    # can't edit it not logged in, but apparently can create users..
     @customer = Customer.find(params[:id])
+    @title = "Edit user"
   end
 
   # POST /customers
   # POST /customers.xml
   def create
-    @customer = Customer.new(params[:customer])
+    @customer = Customer.authenticate(params[:session][:email], params[:session][:password])
+    if @customer.admin?
+      flash_now[:error] = "You do not have permission to access this page."
+    else
+      sign_in @customer
+      redirect_back_or @customer
+      puts "not admin"
+    end
 
     respond_to do |format|
       if @customer.save
@@ -78,6 +93,23 @@ class CustomersController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(customers_url) }
       format.xml  { head :ok }
+    end
+  end
+
+  private
+  def authenticate
+    deny_access unless signed_in?
+  end
+
+  def correct_customer
+    @customer = Customer.find(params[:id])
+    redirect_to(root_path) unless current_customer?(@customer)
+  end  
+
+  def check_for_admin
+    if signed_in?
+    else
+      redirect_to('/login')
     end
   end
 end

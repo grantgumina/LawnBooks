@@ -1,13 +1,15 @@
 <p id="notice"><%= notice %></p>
-<table>
+<table class='payment-info'>
   <tr>
     <th>First Name</th>
     <th>Last Name</th>
     <th>Date Payed</th>
   </tr>
-  <tr>
-    <% @customer = Customer.find(:all, :conditions => { :id => @payment.customer_id }) %>
-    <td><%= @customer[0].methods %></td>
+    <tr>
+    <% @customer = Customer.find(@payment.customer.id) %>
+    <td><%= @customer.first_name%></td>
+    <td><%= @customer.last_name %></td>
+    <td><%= @payment.date_payed %></td>
   </tr>
 
 <%= link_to 'Edit', edit_payment_path(@payment) %> |

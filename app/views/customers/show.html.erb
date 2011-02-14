@@ -11,7 +11,9 @@
         <th>Home Phone</th>
         <th>Cell Phone</th>
         <th>Email</th>
+        <th>Password</th>
         <th>Mowing Day</th>
+        <th>Admin?</th>
       </tr>
       <tr>
         <td><%= @customer.first_name %></td>
@@ -20,6 +22,9 @@
         <td><%= @customer.phone_number %></td>
         <td><%= @customer.cell_number %></td>
         <td><%= @customer.email %></td>
+        <td><%= @customer.password%></td>
+        <td></td>
+        <td><%= @customer.admin%></td>
       </tr>
     </table>
   </fieldset>
