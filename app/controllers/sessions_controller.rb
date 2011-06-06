@@ -11,7 +11,6 @@ class SessionsController < ApplicationController
       flash.now[:error] = 'Invalid email or password'
       @title = 'Login'
       render 'new'
-      puts "ERROR"
     else
       sign_in customer
       redirect_to customer
@@ -22,5 +21,4 @@ class SessionsController < ApplicationController
     sign_out
     redirect_to root_path
   end
-
 end

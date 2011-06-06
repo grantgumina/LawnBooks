@@ -1,6 +1,6 @@
 module SessionsHelper
   def sign_in(customer)
-    cookies.permanent.signed[:remember_token] = [customer.id, customer.salt]
+    cookies.permanent.signed[:remember_token] = [customer.id, customer.password]
     self.current_customer = customer
   end
 
@@ -10,6 +10,7 @@ module SessionsHelper
   end
 
   def signed_in? 
+    # returns false if current_customer is nil
     !current_customer.nil?
   end
 
@@ -19,25 +20,26 @@ module SessionsHelper
   end
 
   def current_customer 
-    @current_customer ||= customer_from_remember_token
+  #   @current_customer ||= customer_from_remember_token
   end
 
   def current_customer?(customer)
-    customer == current_customer
+    # customer == current_customer
+    customer = current_customer
   end
 
   private
-  def customer_from_remember_token
-    Customer.authenticate_with_salt(*remember_token)
-  end
+  # def customer_from_remember_token
+  #   Customer.authenticate_with_salt(*remember_token)
+  # end
 
-  def remember_token
-    cookies.signed[:remember_token] || [nil, nil]
-  end
+  # def remember_token
+  #   cookies.signed[:remember_token] || [nil, nil]
+  # end
 
   def deny_access
     store_location
-    redirect_to "/login", :notice => "Please login."
+    redirect_to "/login"
   end
 
   def store_location

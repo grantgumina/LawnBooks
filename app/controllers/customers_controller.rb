@@ -1,10 +1,10 @@
 include SessionsHelper
 
 class CustomersController < ApplicationController
-  before_filter :authenticate, :only => [:edit, :update]
-  before_filter :correct_customer, :only => [:edit, :update]
-  before_filter :check_for_admin, :only => [:new, :create]
-
+  # before_filter :authenticate
+  # before_filter :correct_customer
+  # before_filter :check_for_admin, :only => [:edit, :update, :destroy]
+  
   # GET /customers
   # GET /customers.xml
   def index
@@ -40,7 +40,6 @@ class CustomersController < ApplicationController
 
   # GET /customers/1/edit
   def edit
-    # can't edit it not logged in, but apparently can create users..
     @customer = Customer.find(params[:id])
     @title = "Edit user"
   end
@@ -49,12 +48,10 @@ class CustomersController < ApplicationController
   # POST /customers.xml
   def create
     @customer = Customer.authenticate(params[:session][:email], params[:session][:password])
-    if @customer.admin?
-      flash_now[:error] = "You do not have permission to access this page."
+    if @customer.is_admin?
     else
       sign_in @customer
       redirect_back_or @customer
-      puts "not admin"
     end
 
     respond_to do |format|

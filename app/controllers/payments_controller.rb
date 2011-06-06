@@ -1,8 +1,14 @@
+include SessionsHelper
+
 class PaymentsController < ApplicationController
-  # GET /payments
-  # GET /payments.xml
+  before_filter :authenticate
+  # before_filter :correct_customer
+  before_filter :check_for_admin, :only => [:create, :edit, :update, :destroy]
+
+  # get /payments
+  # get /payments.xml
   def index
-    @payments = Payment.all
+    @payments = payment.all
 
     respond_to do |format|
       format.html # index.html.erb
@@ -10,10 +16,10 @@ class PaymentsController < ApplicationController
     end
   end
 
-  # GET /payments/1
-  # GET /payments/1.xml
+  # get /payments/1
+  # get /payments/1.xml
   def show
-    @payment = Payment.find(params[:id])
+    @payment = payment.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -21,56 +27,56 @@ class PaymentsController < ApplicationController
     end
   end
 
-  # GET /payments/new
-  # GET /payments/new.xml
+  # get /payments/new
+  # get /payments/new.xml
   def new
-    @payment = Payment.new
+    @payment = payment.new
     @payment.cuts.build
-# 
+
 #     respond_to do |format|
 #       format.html # new.html.erb
 #       format.xml  { render :xml => @payment }
 #     end
   end
 
-  # GET /payments/1/edit
+  # get /payments/1/edit
   def edit
-    @payment = Payment.find(params[:id])
+    @payment = payment.find(params[:id])
   end
 
-  # POST /payments
-  # POST /payments.xml
+  # post /payments
+  # post /payments.xml
   def create
-    @payment = Payment.new(params[:payment])
+    @payment = payment.new(params[:payment])
     
     if @payment.save 
-      flash[:notice] = 'Successfully save payment.'
+      flash[:notice] = 'successfully save payment.'
       redirect_to @payment
     else
-      flash[:notice] = 'Sorry, but there was an error.'
+      flash[:notice] = 'sorry, but there was an error.'
       render :action => 'new'
     end
   end
 
-  # PUT /payments/1
-  # PUT /payments/1.xml
+  # put /payments/1
+  # put /payments/1.xml
   def update
     params[:payment][:existing_cut_attributes] ||= {}
-    @payment = Payment.find(params[:id])
+    @payment = payment.find(params[:id])
     
     if @payment.update_attributes(params[:payment])
-      flash[:notice] = 'Successfully updated payment.'
+      flash[:notice] = 'successfully updated payment.'
       redirect_to @payment
     else
-      flash[:notice] = 'Sorry, but there was an error.'
+      flash[:notice] = 'sorry, but there was an error.'
       render :action => 'edit'
     end
   end
 
-  # DELETE /payments/1
-  # DELETE /payments/1.xml
+  # delete /payments/1
+  # delete /payments/1.xml
   def destroy
-    @payment = Payment.find(params[:id])
+    @payment = payment.find(params[:id])
     @payment.destroy
 
     respond_to do |format|
@@ -78,4 +84,22 @@ class PaymentsController < ApplicationController
       format.xml  { head :ok }
     end
   end
+
+  private
+  def authenticate
+    deny_access unless signed_in?
+  end
+
+  def correct_customer
+    @customer = Customer.find(params[:id])
+    redirect_to(root_path) unless current_customer?(@customer)
+  end  
+
+  def check_for_admin
+    if signed_in?
+    else
+      redirect_to('/login')
+    end
+  end
+
 end
